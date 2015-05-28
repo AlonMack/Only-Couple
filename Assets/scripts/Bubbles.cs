@@ -15,8 +15,8 @@ public class Bubbles : MonoBehaviour {
 	
 	void Start () {
 		int r = Random.Range (5, 11);
-		verticalSize = 5;//r;
-		horizontalSize = 5;//r;
+		verticalSize = r;
+		horizontalSize = r;
 		move = 50;
 		bubbleSize = 20f/Mathf.Max(verticalSize, horizontalSize);
 		for (int y = 0; y < verticalSize; y++) {
