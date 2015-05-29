@@ -36,7 +36,7 @@ public class ColorManager {
 		return resultColor != Color.white && resultColor.Equals (color);
 	}
 
-	public static bool TwoAlreadyExist(int targetPos, Color resultColor){
+	public static bool TwoAlreadyExist(int vertSize, int targetPos, Color resultColor){
 		int uPos = targetPos - 1;
 		int uuPos = targetPos - 2;
 		int bPos = targetPos + 1;
@@ -54,14 +54,14 @@ public class ColorManager {
 		Color rColor = Color.white;
 		Color rrColor = Color.white;
 		
-		if (InField (uPos)) uColor = GetColorByPosition (uPos);
-		if (InField (uuPos)) uuColor = GetColorByPosition (uuPos);
-		if (InField (bPos)) bColor = GetColorByPosition (bPos);
-		if (InField (bbPos)) bbColor = GetColorByPosition (bbPos);
-		if (InField (lPos)) lColor = GetColorByPosition (lPos);
-		if (InField (llPos)) llColor = GetColorByPosition (llPos);
-		if (InField (rPos)) rColor = GetColorByPosition (rPos);
-		if (InField (rrPos))	rrColor = GetColorByPosition (rrPos);
+		if (InField (uPos, vertSize)) uColor = GetColorByPosition (uPos);
+		if (InField (uuPos, vertSize)) uuColor = GetColorByPosition (uuPos);
+		if (InField (bPos, vertSize)) bColor = GetColorByPosition (bPos);
+		if (InField (bbPos, vertSize)) bbColor = GetColorByPosition (bbPos);
+		if (InField (lPos, vertSize)) lColor = GetColorByPosition (lPos);
+		if (InField (llPos, vertSize)) llColor = GetColorByPosition (llPos);
+		if (InField (rPos, vertSize)) rColor = GetColorByPosition (rPos);
+		if (InField (rrPos, vertSize))	rrColor = GetColorByPosition (rrPos);
 		
 		return EqualsColor (resultColor, uColor) && EqualsColor (resultColor, uuColor)
 				|| EqualsColor (resultColor, bColor) && EqualsColor (resultColor, bbColor)
@@ -72,18 +72,20 @@ public class ColorManager {
 	}
 
 	private static Color GetColorByPosition(int pos){
+		if (pos <= 9)
+			return GameObject.Find ("Bubble" + 0 + pos).GetComponent<Renderer> ().material.color;	
 		return GameObject.Find ("Bubble" + pos).GetComponent<Renderer> ().material.color;	
 	}
 
-	static bool IsNeighbor(int firstPosition, int secondPosition, int verSize){
+	static bool IsNeighbor(int firstPosition, int secondPosition){
 		return firstPosition.Equals (secondPosition + 1) 
 			|| firstPosition.Equals (secondPosition - 1) 
-				|| firstPosition.Equals (secondPosition + verSize)
-				|| firstPosition.Equals (secondPosition - verSize);
+				|| firstPosition.Equals (secondPosition + 10)
+				|| firstPosition.Equals (secondPosition - 10);
 	}
 	
-	public static bool InField(int pos){
-		return pos / 10 >= 0 && pos / 10 <= 10 && pos % 10 >=0 && pos % 10 <=10;
+	public static bool InField(int pos, int vertSize){
+		return pos / 10 >= 0 && pos / 10 < vertSize && pos % 10 >=0 && pos % 10 <vertSize;
 	}
 	
 	
@@ -91,8 +93,8 @@ public class ColorManager {
 		return !firstColor.Equals(secondColor)
 			&& !firstColor.Equals(Color.white)
 				&& !(firstColor.Equals(Color.black) || secondColor.Equals(Color.black))
-				&& IsNeighbor (firstPosition, secondPosition, vertSize) 
-				&& !ColorManager.TwoAlreadyExist (position, ColorManager.DefineColor (firstColor, secondColor));
+				&& IsNeighbor (firstPosition, secondPosition) 
+				&& !ColorManager.TwoAlreadyExist (vertSize, position, ColorManager.DefineColor (firstColor, secondColor));
 	}
 
 }

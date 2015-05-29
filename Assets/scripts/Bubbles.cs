@@ -24,7 +24,7 @@ public class Bubbles : MonoBehaviour {
 				GameObject prefab = (GameObject)Resources.Load("prefabs/bubble", typeof(GameObject));
 				float xx = (float)-10f+0.5f*bubbleSize+x*bubbleSize;
 				float yy = (float)10f-0.5f*bubbleSize-y*bubbleSize;
-				GameObject bubble = Instantiate(prefab, new Vector3(xx, yy, 0), Quaternion.identity) as GameObject;
+				GameObject bubble = Instantiate(prefab, new Vector3(xx, yy, 0), prefab.transform.rotation) as GameObject;
 				Transform bubbles = (GameObject.Find("Bubbles")).transform;
 				bubble.transform.parent = bubbles;
 				bubble.transform.localScale = new Vector3(bubbleSize, bubbleSize, 0);
