@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ColorManager {
+public class ColorAndPositionManager {
 	
 	public static Color DefineColor(Color sourceColor, Color targetColor){
 		if (sourceColor.Equals (targetColor)) return sourceColor;
@@ -64,11 +64,11 @@ public class ColorManager {
 		if (InField (rrPos, vertSize))	rrColor = GetColorByPosition (rrPos);
 		
 		return EqualsColor (resultColor, uColor) && EqualsColor (resultColor, uuColor)
-				|| EqualsColor (resultColor, bColor) && EqualsColor (resultColor, bbColor)
-				|| EqualsColor (resultColor, uColor) && EqualsColor (resultColor, bColor)
-				|| EqualsColor (resultColor, lColor) && EqualsColor (resultColor, llColor)
-				|| EqualsColor (resultColor, rColor) && EqualsColor (resultColor, rrColor)
-				|| EqualsColor (resultColor, lColor) && EqualsColor (resultColor, rColor);
+			|| EqualsColor (resultColor, bColor) && EqualsColor (resultColor, bbColor)
+			|| EqualsColor (resultColor, uColor) && EqualsColor (resultColor, bColor)
+			|| EqualsColor (resultColor, lColor) && EqualsColor (resultColor, llColor)
+			|| EqualsColor (resultColor, rColor) && EqualsColor (resultColor, rrColor)
+			|| EqualsColor (resultColor, lColor) && EqualsColor (resultColor, rColor);
 	}
 
 	private static Color GetColorByPosition(int pos){
@@ -77,11 +77,12 @@ public class ColorManager {
 		return GameObject.Find ("Bubble" + pos).GetComponent<Renderer> ().material.color;	
 	}
 
-	static bool IsNeighbor(int firstPosition, int secondPosition){
-		return firstPosition.Equals (secondPosition + 1) 
-			|| firstPosition.Equals (secondPosition - 1) 
-				|| firstPosition.Equals (secondPosition + 10)
-				|| firstPosition.Equals (secondPosition - 10);
+	static bool IsNeighbor(int soursePos, int targetPos){
+
+		return soursePos.Equals (targetPos + 1) 
+			|| soursePos.Equals (targetPos - 1) 
+			|| soursePos.Equals (targetPos + 10)
+			|| soursePos.Equals (targetPos - 10);
 	}
 	
 	public static bool InField(int pos, int vertSize){
@@ -90,11 +91,24 @@ public class ColorManager {
 	
 	
 	public static bool ShouldChangeColor(int vertSize, Color firstColor, Color secondColor, int firstPosition, int secondPosition, int position){
-		return !firstColor.Equals(secondColor)
-			&& !firstColor.Equals(Color.white)
-				&& !(firstColor.Equals(Color.black) || secondColor.Equals(Color.black))
-				&& IsNeighbor (firstPosition, secondPosition) 
-				&& !ColorManager.TwoAlreadyExist (vertSize, position, ColorManager.DefineColor (firstColor, secondColor));
+		return !firstColor.Equals (secondColor)
+			&& !firstColor.Equals (Color.white)
+			&& !(firstColor.Equals (Color.black) || secondColor.Equals (Color.black))
+			&& IsNeighbor (firstPosition, secondPosition) 
+			&& !TwoAlreadyExist (vertSize, position, DefineColor (firstColor, secondColor));
 	}
 
+	public static Color GetColorByName(string colorStr){
+		switch (colorStr) {
+		case "red": return Color.red;
+			case "green": return Color.green;
+			case "blue": return Color.blue;
+			case "cyan": return Color.cyan;
+			case "magenta": return Color.magenta;
+			case "yellow": return Color.yellow;
+			case "black": return Color.black;
+			case "white": return Color.white;
+			default :return Color.black;
+		}
+	}
 }

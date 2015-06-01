@@ -5,14 +5,11 @@ using System;
 
 public class Bubble : MonoBehaviour {
 	private Animator animator;
-	private Animation animation;
 	private GameObject go;
-	
+
 	void Start () {
-		animation = GetComponent<Animation> ();
 		animator = GetComponent<Animator> ();
-		Vector3 scale = animation.transform.localScale;
-		animator.SetInteger ("FieldSize", Convert.ToInt32(Bubbles.verticalSize));
+		animator.SetInteger ("FieldSize", 5);
 	}
 	
 	void Update () {
@@ -23,12 +20,12 @@ public class Bubble : MonoBehaviour {
 			{
 				go = GameObject.Find(hit.collider.gameObject.name);
 				animator = go.GetComponent<Animator>();
-				animator.speed=10;
+				animator.speed=0;
 			}
 		}
 		
 		if (Input.GetMouseButtonUp (0)) {
-			animator.speed=1;
+			animator.speed=3;
 		}
 	}
 }

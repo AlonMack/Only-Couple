@@ -4,20 +4,22 @@ using System.Collections.Generic;
 
 public class Bubbles : MonoBehaviour {
 
-	public static int verticalSize;
+	private static int verticalSize;
 	private int horizontalSize;
 	private float bubbleSize;
 
-	List<GameObject> gameObjects = new List<GameObject> ();
-	public Color firstColor;
-	public int firstPosition;
+	private Dictionary<string, GameObject> gameObjects = new Dictionary<string, GameObject> ();
+	private Color firstColor;
+	private int firstPosition;
 	public static int move;
 	
 	void Start () {
-		int r = Random.Range (5, 11);
-		verticalSize = r;
-		horizontalSize = r;
-		move = 50;
+		List<Level> level= Dao.Loadlevel ();
+		LevelConfig config = new LevelConfig().Get ();
+
+		verticalSize = config.VertSize;
+		horizontalSize = config.HorSize;
+		move = 50;//config.MoveCount;
 		bubbleSize = 20f/Mathf.Max(verticalSize, horizontalSize);
 		for (int y = 0; y < verticalSize; y++) {
 			for (int x = 0; x < horizontalSize; x++) {
@@ -29,34 +31,20 @@ public class Bubbles : MonoBehaviour {
 				bubble.transform.parent = bubbles;
 				bubble.transform.localScale = new Vector3(bubbleSize, bubbleSize, 0);
 				bubble.name ="Bubble" + y + x;
-				if(Random.Range(1,10) <= 2){
-					gameObjects.Add (bubble);
-				}
+				gameObjects.Add (y.ToString() + x, bubble);
 			}
 		}
-		foreach (GameObject go in gameObjects){
-			if(go == null) return;
-			int rand = Random.Range (1, 4);
-			switch (rand){
-			case 1:
-				firstColor = Color.red;
-				break;
-			case 2:
-				firstColor = Color.green;
-				break;
-			case 3:
-				firstColor = Color.blue;
-				break;
-			default:
-				firstColor = Color.black;
-				break;
+		Dictionary<string, Color> colorMap = config.BubbleMap;
+		foreach (string s in gameObjects.Keys) {
+			if(colorMap[s] == null){
+				gameObjects[s].GetComponent<Renderer>().material.color = Color.white;
+			} else{
+				gameObjects[s].GetComponent<Renderer>().material.color = colorMap[s];
 			}
-			go.GetComponent<Renderer>().material.color = firstColor;
 		}
 	}
 	
 	void Update () {
-
 		if (Input.GetMouseButtonDown(0))
 		{
 			RaycastHit2D hit  = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
@@ -76,8 +64,8 @@ public class Bubbles : MonoBehaviour {
 				GameObject go = GameObject.Find(hit.collider.gameObject.name);
 				int secondPosition = int.Parse(hit.collider.gameObject.name.Substring(6));
 				Color secondColor = go.GetComponent<Renderer>().material.color;
-				Color resultColor = ColorManager.DefineColor(secondColor, firstColor);
-				if(ColorManager.ShouldChangeColor(verticalSize, firstColor, secondColor, firstPosition, secondPosition, int.Parse(hit.collider.gameObject.name.Substring(6)))){
+				Color resultColor = ColorAndPositionManager.DefineColor(secondColor, firstColor);
+				if(ColorAndPositionManager.ShouldChangeColor(verticalSize, firstColor, secondColor, firstPosition, secondPosition, int.Parse(hit.collider.gameObject.name.Substring(6)))){
 					go.GetComponent<Renderer>().material.color = resultColor;
 					move--;
 				}
